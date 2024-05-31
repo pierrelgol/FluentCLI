@@ -63,7 +63,7 @@ pub fn FluentCLI(name: []const u8) type {
             flag_regx: []const u8,
             flag_args: []FluentArgument,
             is_optional: bool,
-            callback: ?fn (@This(), anytype) bool,
+            callback: ?fn (self : *FluentCommand, receiver : anytype) bool,
 
             pub fn init() FluentCommand {
                 return FluentCommand{
@@ -121,13 +121,20 @@ pub fn FluentCLI(name: []const u8) type {
 
         pub const FluentCommandRegistry = struct {
             allocator: std.mem.Allocator,
-            commands: []FluentCommand,
+            commands: [32]FluentCommand,
+            count : usize,
 
             pub fn init(allocator: std.mem.Allocator) FluentCommandRegistry {
                 return FluentCommandRegistry{
                     .allocator = allocator,
-                    .commands = []FluentCommand,
+                    .commands = [32]FluentCommand,
+                    .count = 0,
                 };
+            }
+
+            pub fn addCommand(self : *FluentCommandRegistry) *FluentCommand {
+                defer self.count += 1;
+                return (self.commands[self.count].init());
             }
         };
     };

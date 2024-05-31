@@ -1,5 +1,7 @@
 const std = @import("std");
 const Fluent = @import("fluent.zig");
+const FluentCLI = @import("fluent_cli.zig").FluentCLI;
+
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -32,6 +34,18 @@ pub fn main() !void {
 
     var arguments = try std.process.argsWithAllocator(allocator);
     defer arguments.deinit();
+
+    // // This is the intended look and "usage" at the end
+    // const argparse = FluentCLI("my_program");
+    // const argvector = argparse.FluentCommandRegistry.init(allocator);
+    // const help_command = argvector.addCommand()
+    //         .setName("help")
+    //         .setShort("-h")
+    //         .setLong("--help")
+    //         .setDesc("my_program: usage [command] ?[argument]")
+    //         .setRegx("where I compute the regex to identify the command based on the short/long name i guess")
+    //         .setOptionnal(true);
+
 
     if (arguments.skip()) {
         while (arguments.next()) |maybe_path| {
